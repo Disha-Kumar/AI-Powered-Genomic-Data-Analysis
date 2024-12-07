@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Genomic Data Analysis</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const { useState } = React;
+
+        function App() {
+            const [sequence, setSequence] = useState('');
+            const [treatmentPlan, setTreatmentPlan] = useState('');
+
+            const handleSubmit = () => {
+                axios.post('/get_treatment', { sequence })
+                    .then(response => {
+                        setTreatmentPlan(response.data.treatment_plan);
+                    })
+                    .catch(error => {
+                        console.error('There was an error fetching the treatment plan!', error);
+                    });
+            };
+
+            return (
+                <div>
+                    <h1>AI-Powered Genomic Data Analysis</h1>
+                    <label>
+                        Genomic Sequence:
+                        <input type="text" value={sequence} onChange={e => setSequence(e.target.value)} />
+                    </label>
+                    <button onClick={handleSubmit}>Get Treatment Plan</button>
+                    {treatmentPlan && <h2>Treatment Plan: {treatmentPlan}</h2>}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
